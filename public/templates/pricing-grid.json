@@ -1,0 +1,190 @@
+{
+  "id": "tbl_b0831d892",
+  "title": "Pricing grid",
+  "version": "1.0.0",
+  "aspectRatio": "sqrt2:1",
+  "dimensions": {
+    "columns": 4,
+    "rows": 8
+  },
+  "styles": {
+    "themeId": "forest",
+    "zebra": true,
+    "headerRows": 2,
+    "cellPadding": 8,
+    "fontFamily": "sans",
+    "fontSize": 14,
+    "gridColor": "",
+    "gridWidth": 1,
+    "gridStyle": "solid"
+  },
+  "canvas": {
+    "lockMode": "autoscale",
+    "bg": "#ffffff",
+    "margin": 40,
+    "bleed": 12
+  },
+  "columns": [
+    {
+      "width": 240
+    },
+    {
+      "width": 220
+    },
+    {
+      "width": 220
+    },
+    {
+      "width": 220
+    }
+  ],
+  "rows": [
+    {
+      "height": 56
+    },
+    {
+      "height": 34
+    },
+    {
+      "height": 34
+    },
+    {
+      "height": 34
+    },
+    {
+      "height": 34
+    },
+    {
+      "height": 34
+    },
+    {
+      "height": 34
+    },
+    {
+      "height": 34
+    }
+  ],
+  "cells": {
+    "0:0": {
+      "value": "Simple, honest pricing",
+      "type": "text",
+      "style": {
+        "align": "center",
+        "fontSize": 22,
+        "bold": true
+      }
+    },
+    "1:1": {
+      "value": "Starter",
+      "type": "text"
+    },
+    "1:2": {
+      "value": "Team",
+      "type": "text"
+    },
+    "1:3": {
+      "value": "Business",
+      "type": "text"
+    },
+    "2:0": {
+      "value": "Monthly price",
+      "type": "text"
+    },
+    "2:1": {
+      "value": "$9",
+      "type": "text"
+    },
+    "2:2": {
+      "value": "$29",
+      "type": "text"
+    },
+    "2:3": {
+      "value": "$99",
+      "type": "text"
+    },
+    "3:0": {
+      "value": "Seats",
+      "type": "text"
+    },
+    "3:1": {
+      "value": "1",
+      "type": "number"
+    },
+    "3:2": {
+      "value": "10",
+      "type": "number"
+    },
+    "3:3": {
+      "value": "50",
+      "type": "number"
+    },
+    "4:0": {
+      "value": "Projects",
+      "type": "text"
+    },
+    "4:1": {
+      "value": "3",
+      "type": "number"
+    },
+    "4:2": {
+      "value": "Unlimited",
+      "type": "text"
+    },
+    "4:3": {
+      "value": "Unlimited",
+      "type": "text"
+    },
+    "5:0": {
+      "value": "Priority support",
+      "type": "text"
+    },
+    "5:2": {
+      "value": "✓",
+      "type": "text"
+    },
+    "5:3": {
+      "value": "✓",
+      "type": "text"
+    },
+    "6:0": {
+      "value": "SSO",
+      "type": "text"
+    },
+    "6:3": {
+      "value": "✓",
+      "type": "text"
+    },
+    "7:0": {
+      "value": "Yearly (2 months free)",
+      "type": "text"
+    },
+    "7:1": {
+      "value": "=B3*10",
+      "type": "text"
+    },
+    "7:2": {
+      "value": "=C3*10",
+      "type": "text"
+    },
+    "7:3": {
+      "value": "=D3*10",
+      "type": "text"
+    }
+  },
+  "mergedRanges": [
+    {
+      "r1": 0,
+      "c1": 0,
+      "r2": 0,
+      "c2": 3
+    }
+  ],
+  "borders": {},
+  "conditionalRules": [],
+  "validations": [],
+  "filters": [],
+  "frozen": {
+    "rows": 0,
+    "cols": 0
+  }
+}

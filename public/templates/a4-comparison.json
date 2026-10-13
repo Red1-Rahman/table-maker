@@ -1,0 +1,225 @@
+{
+  "id": "tbl_6913f3f11",
+  "title": "Comparison sheet (A4)",
+  "version": "1.0.0",
+  "aspectRatio": "1:sqrt2",
+  "dimensions": {
+    "columns": 4,
+    "rows": 9
+  },
+  "styles": {
+    "themeId": "cobalt",
+    "zebra": true,
+    "headerRows": 1,
+    "cellPadding": 8,
+    "fontFamily": "sans",
+    "fontSize": 14,
+    "gridColor": "",
+    "gridWidth": 1,
+    "gridStyle": "solid"
+  },
+  "canvas": {
+    "lockMode": "autoscale",
+    "bg": "#ffffff",
+    "margin": 40,
+    "bleed": 12
+  },
+  "columns": [
+    {
+      "width": 190
+    },
+    {
+      "width": 160
+    },
+    {
+      "width": 160
+    },
+    {
+      "width": 160
+    }
+  ],
+  "rows": [
+    {
+      "height": 34
+    },
+    {
+      "height": 34
+    },
+    {
+      "height": 34
+    },
+    {
+      "height": 34
+    },
+    {
+      "height": 34
+    },
+    {
+      "height": 34
+    },
+    {
+      "height": 34
+    },
+    {
+      "height": 34
+    },
+    {
+      "height": 34
+    }
+  ],
+  "cells": {
+    "0:0": {
+      "value": "Feature",
+      "type": "text"
+    },
+    "0:1": {
+      "value": "Option A",
+      "type": "text"
+    },
+    "0:2": {
+      "value": "Option B",
+      "type": "text"
+    },
+    "0:3": {
+      "value": "Option C",
+      "type": "text"
+    },
+    "1:0": {
+      "value": "Price",
+      "type": "text"
+    },
+    "1:1": {
+      "value": "$10",
+      "type": "text"
+    },
+    "1:2": {
+      "value": "$25",
+      "type": "text"
+    },
+    "1:3": {
+      "value": "$40",
+      "type": "text"
+    },
+    "2:0": {
+      "value": "Storage",
+      "type": "text"
+    },
+    "2:1": {
+      "value": "10 GB",
+      "type": "text"
+    },
+    "2:2": {
+      "value": "100 GB",
+      "type": "text"
+    },
+    "2:3": {
+      "value": "1 TB",
+      "type": "text"
+    },
+    "3:0": {
+      "value": "Users",
+      "type": "text"
+    },
+    "3:1": {
+      "value": "1",
+      "type": "number"
+    },
+    "3:2": {
+      "value": "5",
+      "type": "number"
+    },
+    "3:3": {
+      "value": "Unlimited",
+      "type": "text"
+    },
+    "4:0": {
+      "value": "Support",
+      "type": "text"
+    },
+    "4:1": {
+      "value": "Email",
+      "type": "text"
+    },
+    "4:2": {
+      "value": "Email + chat",
+      "type": "text"
+    },
+    "4:3": {
+      "value": "24/7 phone",
+      "type": "text"
+    },
+    "5:0": {
+      "value": "API access",
+      "type": "text"
+    },
+    "5:1": {
+      "value": "No",
+      "type": "text"
+    },
+    "5:2": {
+      "value": "Yes",
+      "type": "text"
+    },
+    "5:3": {
+      "value": "Yes",
+      "type": "text"
+    },
+    "6:0": {
+      "value": "Uptime SLA",
+      "type": "text"
+    },
+    "6:1": {
+      "value": "—",
+      "type": "text"
+    },
+    "6:2": {
+      "value": "99.5%",
+      "type": "text"
+    },
+    "6:3": {
+      "value": "99.99%",
+      "type": "text"
+    },
+    "7:0": {
+      "value": "Free trial",
+      "type": "text"
+    },
+    "7:1": {
+      "value": "14 days",
+      "type": "text"
+    },
+    "7:2": {
+      "value": "14 days",
+      "type": "text"
+    },
+    "7:3": {
+      "value": "30 days",
+      "type": "text"
+    },
+    "8:0": {
+      "value": "Best for",
+      "type": "text"
+    },
+    "8:1": {
+      "value": "Individuals",
+      "type": "text"
+    },
+    "8:2": {
+      "value": "Small teams",
+      "type": "text"
+    },
+    "8:3": {
+      "value": "Companies",
+      "type": "text"
+    }
+  },
+  "mergedRanges": [],
+  "borders": {},
+  "conditionalRules": [],
+  "validations": [],
+  "filters": [],
+  "frozen": {
+    "rows": 0,
+    "cols": 0
+  }
+}

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "a4-comparison",
+    "name": "A4 comparison sheet",
+    "description": "Portrait feature comparison with a cobalt header.",
+    "file": "a4-comparison.json"
+  },
+  {
+    "id": "pricing-grid",
+    "name": "Pricing grid",
+    "description": "Landscape plans table with merged title and formulas.",
+    "file": "pricing-grid.json"
+  },
+  {
+    "id": "weekly-schedule",
+    "name": "Weekly schedule",
+    "description": "Landscape timetable with merged blocks.",
+    "file": "weekly-schedule.json"
+  },
+  {
+    "id": "invoice",
+    "name": "Invoice",
+    "description": "Line items with SUM / ROUND formulas.",
+    "file": "invoice.json"
+  },
+  {
+    "id": "task-tracker",
+    "name": "Task tracker",
+    "description": "Checkboxes, dropdown statuses and priority data bars.",
+    "file": "task-tracker.json"
+  }
+]

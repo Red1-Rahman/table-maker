@@ -1,0 +1,196 @@
+{
+  "id": "tbl_de132f3c3",
+  "title": "Weekly schedule",
+  "version": "1.0.0",
+  "aspectRatio": "sqrt2:1",
+  "dimensions": {
+    "columns": 8,
+    "rows": 11
+  },
+  "styles": {
+    "themeId": "slate",
+    "zebra": false,
+    "headerRows": 1,
+    "cellPadding": 8,
+    "fontFamily": "sans",
+    "fontSize": 14,
+    "gridColor": "",
+    "gridWidth": 1,
+    "gridStyle": "solid"
+  },
+  "canvas": {
+    "lockMode": "autoscale",
+    "bg": "#ffffff",
+    "margin": 40,
+    "bleed": 12
+  },
+  "columns": [
+    {
+      "width": 80
+    },
+    {
+      "width": 120
+    },
+    {
+      "width": 120
+    },
+    {
+      "width": 120
+    },
+    {
+      "width": 120
+    },
+    {
+      "width": 120
+    },
+    {
+      "width": 120
+    },
+    {
+      "width": 120
+    }
+  ],
+  "rows": [
+    {
+      "height": 34
+    },
+    {
+      "height": 34
+    },
+    {
+      "height": 34
+    },
+    {
+      "height": 34
+    },
+    {
+      "height": 34
+    },
+    {
+      "height": 34
+    },
+    {
+      "height": 34
+    },
+    {
+      "height": 34
+    },
+    {
+      "height": 34
+    },
+    {
+      "height": 34
+    },
+    {
+      "height": 34
+    }
+  ],
+  "cells": {
+    "0:1": {
+      "value": "Mon",
+      "type": "text"
+    },
+    "0:2": {
+      "value": "Tue",
+      "type": "text"
+    },
+    "0:3": {
+      "value": "Wed",
+      "type": "text"
+    },
+    "0:4": {
+      "value": "Thu",
+      "type": "text"
+    },
+    "0:5": {
+      "value": "Fri",
+      "type": "text"
+    },
+    "0:6": {
+      "value": "Sat",
+      "type": "text"
+    },
+    "0:7": {
+      "value": "Sun",
+      "type": "text"
+    },
+    "1:0": {
+      "value": "8:00",
+      "type": "text"
+    },
+    "2:0": {
+      "value": "9:00",
+      "type": "text"
+    },
+    "3:0": {
+      "value": "10:00",
+      "type": "text"
+    },
+    "4:0": {
+      "value": "11:00",
+      "type": "text"
+    },
+    "5:0": {
+      "value": "12:00",
+      "type": "text"
+    },
+    "6:0": {
+      "value": "13:00",
+      "type": "text"
+    },
+    "7:0": {
+      "value": "14:00",
+      "type": "text"
+    },
+    "8:0": {
+      "value": "15:00",
+      "type": "text"
+    },
+    "9:0": {
+      "value": "16:00",
+      "type": "text"
+    },
+    "10:0": {
+      "value": "17:00",
+      "type": "text"
+    },
+    "2:1": {
+      "value": "Team meeting",
+      "type": "text",
+      "style": {
+        "bg": "#dbeafe"
+      }
+    },
+    "5:3": {
+      "value": "Gym",
+      "type": "text",
+      "style": {
+        "bg": "#dcfce7"
+      }
+    },
+    "4:2": {
+      "value": "Workshop",
+      "type": "text",
+      "style": {
+        "bg": "#fef3c7",
+        "valign": "top"
+      }
+    }
+  },
+  "mergedRanges": [
+    {
+      "r1": 4,
+      "c1": 2,
+      "r2": 5,
+      "c2": 2
+    }
+  ],
+  "borders": {},
+  "conditionalRules": [],
+  "validations": [],
+  "filters": [],
+  "frozen": {
+    "rows": 0,
+    "cols": 0
+  }
+}

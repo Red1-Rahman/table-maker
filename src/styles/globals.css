@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  @apply bg-chrome font-ui text-ink antialiased;
+  overscroll-behavior: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+input[type='number']::-webkit-inner-spin-button {
+  opacity: 0.6;
+}
+
+.field {
+  @apply h-8 w-full rounded border border-rule bg-white px-2 text-[13px] text-ink focus:border-accent focus:outline-none;
+}
+
+.label {
+  @apply mb-1 block text-[12px] font-medium text-ink-soft;
+}
+
+.section-title {
+  @apply mb-2 mt-4 text-[12px] font-semibold text-ink first:mt-0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

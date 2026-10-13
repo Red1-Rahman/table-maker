@@ -1,6 +1,17 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-desk: #dde2e8;
+  --color-chrome: #f4f6f8;
+  --color-ink: #17202e;
+  --color-ink-soft: #566176;
+  --color-rule: #cfd5de;
+  --color-accent: #2f5bea;
+  --color-accent-soft: #e6ecfd;
+  --color-guide: #d6336c;
+  --font-ui: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+}
 
 :root {
   color-scheme: light;

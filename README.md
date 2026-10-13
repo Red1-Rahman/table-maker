@@ -1,6 +1,9 @@
 # Table Maker
-![alt text](public\screenshots\image.png)
+
+![Table Maker screenshot](public/screenshots/image.png)
+
 A free, canvas-first table designer that runs entirely in the browser (GitHub Pages) or as a desktop app (Tauri).
+
 Design a table on a page with a fixed aspect ratio, format it, validate it, drive it with formulas or AI, and export it to seven formats.
 
 ## Features (v1)

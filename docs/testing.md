@@ -21,9 +21,12 @@ npx playwright show-trace test-results/<test>/trace.zip   # open a trace
 ```
 
 The Playwright config builds the app and serves it with `vite preview` under `/table-maker/`, so the
-tests exercise the same relative asset paths GitHub Pages uses. Chromium is not part of CI. Enable it
-locally with `PW_CHROMIUM=1 npm run test:e2e` or `npm run test:e2e:chromium`, because running a third
-engine costs minutes that the budget in `docs/deployment.md` does not have.
+tests exercise the same relative asset paths GitHub Pages uses. Chromium is not part of CI. Run it
+locally with `npm run test:e2e:chromium`, and `npm run test:e2e:all` for the three engines at once,
+because running a third engine costs minutes that the budget in `docs/deployment.md` does not have.
+The project list in `playwright.config.ts` is static on purpose: Playwright re-reads the config inside
+each worker process, so a project list that depends on `process.argv` breaks the workers. Which
+projects run is decided only by the `--project` flags in the npm scripts.
 
 ## The diagnostics fixture
 
@@ -125,7 +128,9 @@ itself, because the production CSP has a narrow `connect-src` and would block th
 
 1. Open the job summary. It shows a table with passed, failed, flaky and skipped counts per browser,
    the measured run time, and for every failure the diagnostic category that failed (`network`,
-   `status`, `console`, `pageerror` or `websocket`).
+   `status`, `console`, `pageerror` or `websocket`). Durations are converted from the milliseconds
+   Playwright reports into seconds, so a browser that really took four minutes shows about `240.0s`.
+   A number in the thousands of seconds means the conversion broke, not that the suite was slow.
 2. Download the `playwright-<browser>` artifact from the failed run. It contains the HTML report and
    `test-results/**/trace.zip` (kept for 7 days, uploaded only on failure).
 3. Run `npx playwright show-trace path/to/trace.zip`. The trace viewer records every action, the DOM
@@ -139,7 +144,7 @@ itself, because the production CSP has a narrow `connect-src` and would block th
 | Workflow | Trigger | Runner | Job |
 | --- | --- | --- | --- |
 | `.github/workflows/ci.yml` | push to `main`, pull request | ubuntu-latest | lint, typecheck, contract check, Vitest with coverage, build |
-| `.github/workflows/cross-platform.yml` | push to `main`, pull request | ubuntu, windows, macos | Vitest on three operating systems, plus a Chromium Playwright smoke run on Linux |
+| `.github/workflows/cross-platform.yml` | push to `main`, pull request | ubuntu, windows, macos | Vitest on three operating systems. No browser run: that is `cross-browser.yml`. |
 | `.github/workflows/cross-browser.yml` | pull request, push to `main`, manual, path filtered | ubuntu-latest, matrix `firefox` and `webkit` | the full Playwright suite in both engines with the diagnostics fixture |
 | `.github/workflows/security.yml` | push to `main`, pull request, weekly schedule | ubuntu-latest | `npm audit`, CodeQL for JavaScript and TypeScript |
 | `.github/workflows/supply-chain.yml` | pull request | ubuntu-latest | dependency review of the lock file |

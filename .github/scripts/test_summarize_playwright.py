@@ -37,18 +37,18 @@ def test_counts_per_browser_and_flaky(tmp_path: pathlib.Path) -> None:
             {
                 "title": "",
                 "specs": [
-                    spec_entry("passes", "firefox", [{"status": "passed", "duration": 2.0}]),
+                    spec_entry("passes", "firefox", [{"status": "passed", "duration": 2000}]),
                     spec_entry("retried", "firefox", [
-                        {"status": "failed", "duration": 1.0},
-                        {"status": "passed", "duration": 1.5, "retry": 1},
+                        {"status": "failed", "duration": 1000},
+                        {"status": "passed", "duration": 1500, "retry": 1},
                     ]),
-                    spec_entry("fails", "webkit", [{"status": "failed", "duration": 3.0, "errors": [{"message": "[console] boom"}]}]),
-                    spec_entry("skips", "webkit", [{"status": "skipped", "duration": 0.0}]),
+                    spec_entry("fails", "webkit", [{"status": "failed", "duration": 3000, "errors": [{"message": "[console] boom"}]}]),
+                    spec_entry("skips", "webkit", [{"status": "skipped", "duration": 0}]),
                 ],
                 "suites": [],
             }
         ],
-        "stats": {"duration": 6.5},
+        "stats": {"duration": 6500},
     }
     report = summarize.load_report(make_report(tmp_path, payload))
     summary = summarize.summarise(report)
@@ -58,7 +58,25 @@ def test_counts_per_browser_and_flaky(tmp_path: pathlib.Path) -> None:
         ("webkit", 0, 1, 0, 1),
     ]
     assert summary.failures[0].category == "console"
+    # 2000 + 1000 + 1500 + 3000 ms = 7500 ms = 7.5 s. If the ms-to-s conversion is ever dropped this
+    # asserts 7500.0 and fails.
     assert summary.total_duration_seconds == 7.5
+    assert {b.browser: b.duration_seconds for b in summary.browsers} == {"firefox": 4.5, "webkit": 3.0}
+
+
+def test_durations_are_reported_in_seconds_not_milliseconds(tmp_path: pathlib.Path) -> None:
+    payload = {
+        "suites": [{"title": "", "specs": [
+            spec_entry("one second", "firefox", [{"status": "passed", "duration": 1000}]),
+            spec_entry("two minutes", "firefox", [{"status": "passed", "duration": 120_000}]),
+        ], "suites": []}]
+    }
+    report = summarize.load_report(make_report(tmp_path, payload))
+    summary = summarize.summarise(report)
+    markdown = summarize.render(summary, report)
+    assert summary.total_duration_seconds == 121.0
+    assert "| firefox | 2 | 0 | 0 | 0 | 121.0s |" in markdown
+    assert "121000" not in markdown
 
 
 def test_category_is_taken_from_the_diagnostics_fixture_message() -> None:
@@ -80,7 +98,7 @@ def test_markdown_is_escaped_in_titles() -> None:
 
 
 def test_render_contains_a_row_per_browser() -> None:
-    payload = {"suites": [{"title": "", "specs": [spec_entry("ok", "webkit", [{"status": "passed", "duration": 1.0}])], "suites": []}]}
+    payload = {"suites": [{"title": "", "specs": [spec_entry("ok", "webkit", [{"status": "passed", "duration": 1000}])], "suites": []}]}
     report = summarize.Report.model_validate(payload)
     markdown = summarize.render(summarize.summarise(report), report)
     assert "| Browser | Passed | Failed | Flaky | Skipped | Duration |" in markdown
@@ -113,7 +131,7 @@ def test_invalid_report_shape_is_rejected(tmp_path: pathlib.Path) -> None:
 
 def test_main_writes_to_the_step_summary(tmp_path: pathlib.Path, monkeypatch: pytest.MonkeyPatch, capsys) -> None:
     report_path = make_report(tmp_path, {"suites": [{"title": "", "specs": [spec_entry("ok", "firefox", [
-        {"status": "passed", "duration": 1.0}
+        {"status": "passed", "duration": 1000}
     ])], "suites": []}]})
     step_summary = tmp_path / "summary.md"
     monkeypatch.setenv("PLAYWRIGHT_JSON_REPORT", report_path)
@@ -130,7 +148,7 @@ def test_main_returns_non_zero_only_on_parse_failure(tmp_path: pathlib.Path, mon
     assert summarize.main([]) == 2
 
     failing = make_report(tmp_path, {"suites": [{"title": "", "specs": [spec_entry("nope", "webkit", [
-        {"status": "failed", "duration": 1.0, "errors": [{"message": "boom"}]}
+        {"status": "failed", "duration": 1000, "errors": [{"message": "boom"}]}
     ])], "suites": []}]})
     monkeypatch.setenv("PLAYWRIGHT_JSON_REPORT", failing)
     assert summarize.main([]) == 0

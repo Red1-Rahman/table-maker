@@ -25,11 +25,21 @@ _MAX_FAILURES = 10
 _MARKDOWN_SPECIALS = re.compile(r"([\\`*_{}\[\]()#+\-.!<>|])")
 
 
+def _ms_to_seconds(value: float) -> float:
+    """Playwright reports durations in milliseconds; every model here stores seconds.
+
+    Centralised so the unit conversion cannot be forgotten at a call site, and covered by a unit
+    test that fails if the factor is ever dropped.
+    """
+    return value / 1000.0
+
+
 class Result(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
     status: str
-    duration: float = 0.0
+    # Raw value from the report: milliseconds.
+    duration: float = Field(default=0.0, ge=0)
     retry: int = 0
     errors: list[dict] = Field(default_factory=list)
 
@@ -87,7 +97,8 @@ class BrowserCounts(BaseModel):
     failed: int = 0
     flaky: int = 0
     skipped: int = 0
-    duration_seconds: float = 0.0
+    # Seconds. A suite that takes more than a day would mean the unit conversion broke.
+    duration_seconds: float = Field(default=0.0, ge=0, le=86_400)
 
 
 class FailureRow(BaseModel):
@@ -101,7 +112,8 @@ class Summary(BaseModel):
 
     browsers: list[BrowserCounts]
     failures: list[FailureRow]
-    total_duration_seconds: float
+    # Seconds, with the same sanity ceiling as BrowserCounts.duration_seconds.
+    total_duration_seconds: float = Field(ge=0, le=86_400)
 
 
 def flatten(suites: list[Suite]) -> list[Spec]:
@@ -135,7 +147,8 @@ def summarise(report: Report, max_failures: int = _MAX_FAILURES) -> Summary:
             if final is None:
                 counts.skipped += 1
                 continue
-            duration = sum(r.duration for r in case.results)
+            # Playwright reports result.duration in MILLISECONDS. Every field here is in seconds.
+            duration = sum(_ms_to_seconds(r.duration) for r in case.results)
             counts.duration_seconds += duration
             total_duration += duration
             retried = len([r for r in case.results if r.retry > 0]) or (final.retry > 0)

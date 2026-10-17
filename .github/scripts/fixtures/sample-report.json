@@ -2,6 +2,7 @@
   "config": {
     "projects": [{ "name": "firefox" }, { "name": "webkit" }]
   },
+  "_comment": "Durations are in MILLISECONDS, exactly as Playwright's JSON reporter writes them.",
   "suites": [
     {
       "title": "",
@@ -13,11 +14,11 @@
           "tests": [
             {
               "projectName": "firefox",
-              "results": [{ "status": "passed", "duration": 4.2, "retry": 0, "errors": [] }]
+              "results": [{ "status": "passed", "duration": 4200, "retry": 0, "errors": [] }]
             },
             {
               "projectName": "webkit",
-              "results": [{ "status": "passed", "duration": 5.1, "retry": 0, "errors": [] }]
+              "results": [{ "status": "passed", "duration": 5100, "retry": 0, "errors": [] }]
             }
           ]
         }
@@ -36,13 +37,13 @@
                   "results": [
                     {
                       "status": "failed",
-                      "duration": 6.0,
+                      "duration": 6000,
                       "retry": 0,
                       "errors": [{ "message": "Error: Browser diagnostics failed (1 problem(s)):\n[status]\n  - 404 http://localhost:4173/table-maker/assets/missing.js (resource type: script, content-type: none)" }]
                     },
                     {
                       "status": "passed",
-                      "duration": 5.5,
+                      "duration": 5500,
                       "retry": 1,
                       "errors": []
                     }
@@ -50,7 +51,7 @@
                 },
                 {
                   "projectName": "webkit",
-                  "results": [{ "status": "failed", "duration": 7.0, "retry": 0, "errors": [{ "message": "locator.click: timeout" }] }]
+                  "results": [{ "status": "failed", "duration": 7000, "retry": 0, "errors": [{ "message": "locator.click: timeout" }] }]
                 }
               ]
             }
@@ -63,7 +64,7 @@
   "errors": [],
   "stats": {
     "startTime": "2026-01-01T00:00:00.000Z",
-    "duration": 27.8,
+    "duration": 27800,
     "expected": 2,
     "unexpected": 1,
     "flaky": 1,

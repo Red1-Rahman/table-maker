@@ -118,7 +118,9 @@ def test_sample_report_fixture_renders_a_full_table() -> None:
     ]
     # Only the final result counts, so the retried firefox failure is flaky, not failed.
     assert [f.category for f in summary.failures] == ["other"]
+    # 4200 + 6000 + 5500 ms = 15700 ms = 15.7 s. Guards the millisecond-to-second conversion.
     assert "| firefox | 1 | 0 | 1 | 0 | 15.7s |" in markdown
+    assert "| webkit | 1 | 1 | 0 | 0 | 12.1s |" in markdown
     assert summary.total_duration_seconds == 27.8
     assert "`webkit` **other**" in markdown
 

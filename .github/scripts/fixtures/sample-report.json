@@ -1,0 +1,72 @@
+{
+  "config": {
+    "projects": [{ "name": "firefox" }, { "name": "webkit" }]
+  },
+  "suites": [
+    {
+      "title": "",
+      "file": "tests/e2e/app-load.spec.ts",
+      "specs": [
+        {
+          "title": "app load > serves the production build from the GitHub Pages base path",
+          "file": "tests/e2e/app-load.spec.ts",
+          "tests": [
+            {
+              "projectName": "firefox",
+              "results": [{ "status": "passed", "duration": 4.2, "retry": 0, "errors": [] }]
+            },
+            {
+              "projectName": "webkit",
+              "results": [{ "status": "passed", "duration": 5.1, "retry": 0, "errors": [] }]
+            }
+          ]
+        }
+      ],
+      "suites": [
+        {
+          "title": "export",
+          "file": "tests/e2e/import-export.spec.ts",
+          "specs": [
+            {
+              "title": "export > exports CSV with the suggested name and valid structure",
+              "file": "tests/e2e/import-export.spec.ts",
+              "tests": [
+                {
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "status": "failed",
+                      "duration": 6.0,
+                      "retry": 0,
+                      "errors": [{ "message": "Error: Browser diagnostics failed (1 problem(s)):\n[status]\n  - 404 http://localhost:4173/table-maker/assets/missing.js (resource type: script, content-type: none)" }]
+                    },
+                    {
+                      "status": "passed",
+                      "duration": 5.5,
+                      "retry": 1,
+                      "errors": []
+                    }
+                  ]
+                },
+                {
+                  "projectName": "webkit",
+                  "results": [{ "status": "failed", "duration": 7.0, "retry": 0, "errors": [{ "message": "locator.click: timeout" }] }]
+                }
+              ]
+            }
+          ],
+          "suites": []
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-01-01T00:00:00.000Z",
+    "duration": 27.8,
+    "expected": 2,
+    "unexpected": 1,
+    "flaky": 1,
+    "skipped": 0
+  }
+}

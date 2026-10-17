@@ -5,22 +5,48 @@ on:
   pull_request:
   schedule:
     - cron: '0 5 * * 1'
-permissions:
-  contents: read
-  security-events: write
+
+# Nothing at workflow level: the jobs below opt in to exactly what they need.
+permissions: {}
+
+concurrency:
+  group: security-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   audit:
+    name: npm audit
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Check out the repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with: { node-version: 22, cache: npm }
-      - run: npm ci
-      - run: npm audit --omit=dev --audit-level=high
+      - name: Install dependencies
+        run: npm ci
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+
   codeql:
+    name: CodeQL (JavaScript and TypeScript)
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read # read the checked out sources
+      security-events: write # upload CodeQL results to code scanning
     steps:
-      - uses: actions/checkout@v4
-      - uses: github/codeql-action/init@v3
+      - name: Check out the repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Initialise CodeQL
+        uses: github/codeql-action/init@ce5e7eeac396d720fe2d802714996c8ce561e311 # v3
         with: { languages: javascript-typescript }
-      - uses: github/codeql-action/analyze@v3
+      - name: Analyse with CodeQL
+        uses: github/codeql-action/analyze@ce5e7eeac396d720fe2d802714996c8ce561e311 # v3

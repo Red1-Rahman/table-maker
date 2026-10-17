@@ -4,7 +4,7 @@ Table Maker is a static single-page app (Vite + React + TypeScript). There is no
 
 ```
 src/
-  core/            Pure TypeScript (no React) – unit-tested in Node
+  core/            Pure TypeScript (no React) - unit-tested in Node
     engine/        formulas, grid ops, layout, themes, validation, scene builder, canvas math
     export/        painters (canvas, PDF) + CSV/XLSX/MD/HTML/JSON exporters + importers
     ai/            provider adapters (fetch), prompt, response parser, auto-switch client
@@ -32,3 +32,14 @@ The canvas is zoomed with a CSS transform; `useViewport` converts the scroll rec
 
 ## Desktop
 `src-tauri` is a thin Tauri v2 shell. In the desktop app `utils/platform.ts` uses the native save dialog and `plugin-fs`; in the browser it triggers a normal download.
+
+## Test layering
+`core/` is pure TypeScript, so it is unit tested directly in Node (`tests/unit/`). `App` and the store
+contract are covered by a jsdom component test (`tests/component/`). Everything that only a browser can
+answer (IndexedDB drafts, canvas painting, downloads, import files, clipboard events, provider
+requests, WebSockets, MIME types) lives in `tests/e2e/` and runs against the built app in Firefox and
+WebKit. Those specs import `test` from `tests/fixtures/diagnostics.ts` instead of `@playwright/test`:
+the fixture attaches network, response status, console, page error and WebSocket listeners before the
+first navigation and asserts them in teardown, so the browser level checks are automatic rather than
+optional. It also attaches the collected data to the test result for debugging. See `docs/testing.md`
+for the diagnostics categories, the console allowlist rules and the honest limits of WebKit.

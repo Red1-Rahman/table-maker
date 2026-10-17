@@ -115,6 +115,7 @@ export function GridHeader({ layout, rows, cols, scale, onResizing }: Props) {
       <div
         key={`r${r}`}
         draggable
+        data-row-header={r}
         className={`${base} border-b border-r ${selected ? '!bg-accent-soft !text-accent' : ''} ${over === `r${r}` ? '!bg-accent/30' : ''}`}
         style={{ left: -HEADER_W, top: y, width: HEADER_W, height: h, cursor: 'pointer' }}
         onClick={(e) => useStore.getState().selectRow(r, e.shiftKey)}

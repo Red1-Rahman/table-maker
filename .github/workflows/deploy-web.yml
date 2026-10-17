@@ -5,10 +5,8 @@ on:
     branches: [main]
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+# Nothing at workflow level: both jobs need Pages write access, so it is granted per job.
+permissions: {}
 
 concurrency:
   group: pages
@@ -16,14 +14,22 @@ concurrency:
 
 jobs:
   build:
+    name: Build and upload the Pages artifact
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read # read the checked out sources
+      pages: read # resolve the Pages site URL for the deployment
+      id-token: write # mint the OIDC token that deploy-pages exchanges for credentials
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: npm
@@ -38,16 +44,22 @@ jobs:
         run: npm run build:web
 
       - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v5
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
         with:
           path: dist
 
   deploy:
+    name: Publish to GitHub Pages
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read # read the checked out sources
+      pages: write # publish the uploaded artifact to the Pages site
+      id-token: write # mint the OIDC token that deploy-pages exchanges for credentials
 
     environment:
       name: github-pages
@@ -56,4 +68,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v5
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5

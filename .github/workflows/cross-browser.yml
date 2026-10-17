@@ -106,8 +106,10 @@ jobs:
       - name: Record the wall clock start
         run: echo "START_EPOCH=$(date +%s)" >> "$GITHUB_ENV"
 
+      # Runs only the browser this matrix entry installed. `npm run test:e2e:ci` would run both
+      # Firefox and WebKit, so each job would also try to launch the browser it never installed.
       - name: Run the Playwright suite
-        run: npm run test:e2e:ci
+        run: npx playwright test --project="$PLAYWRIGHT_BROWSER"
 
       - name: Install the summary script dependencies
         if: always()

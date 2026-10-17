@@ -6,8 +6,6 @@ const BASE_PATH = process.env.PW_BASE_PATH ?? '/table-maker/';
 const BASE_URL = `http://localhost:${PORT}${BASE_PATH}`;
 
 const isCI = !!process.env.CI;
-/** Chromium stays a local convenience: enable it with PW_CHROMIUM=1 or by naming the project explicitly. */
-const withChromium = process.env.PW_CHROMIUM === '1' || process.argv.includes('--project=chromium');
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -32,11 +30,16 @@ export default defineConfig({
     video: 'off',
     screenshot: 'off',
   },
+  // Every project is always declared. Which of them actually runs is decided by the `--project`
+  // flags in the npm scripts, never by inspecting process.argv here: Playwright re-evaluates this
+  // config inside each worker process, and a worker does not inherit the parent's CLI arguments, so
+  // an argv-dependent project list makes workers fail with "project not found in the worker process".
   projects: [
     { name: 'firefox', use: { browserName: 'firefox' } },
     { name: 'webkit', use: { browserName: 'webkit' } },
-    // Chromium is a local convenience only. CI never runs it, see docs/testing.md.
-    ...(withChromium ? [{ name: 'chromium', use: { browserName: 'chromium' as const } }] : []),
+    // Chromium is a local convenience only. CI selects firefox and webkit explicitly, so it never
+    // runs there. See docs/testing.md.
+    { name: 'chromium', use: { browserName: 'chromium' } },
   ],
   webServer: {
     command: `npm run build:web && npm run preview -- --base ${BASE_PATH} --port ${PORT} --strictPort`,

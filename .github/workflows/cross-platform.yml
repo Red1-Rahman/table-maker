@@ -35,27 +35,7 @@ jobs:
       - name: Unit and component tests
         run: npm test
 
-  e2e:
-    # Firefox and WebKit live in cross-browser.yml. This job keeps a fast Chromium smoke run on the
-    # default Linux runner, which is the project behind .github/workflows/cross-browser.yml.
-    name: Playwright smoke test on Chromium
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    permissions:
-      contents: read
-    steps:
-      - name: Check out the repository
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-        with:
-          persist-credentials: false
-      - name: Set up Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
-        with: { node-version: 22, cache: npm }
-      # npm ci first: npx resolves the pinned @playwright/test, so the downloaded browser build
-      # matches the version the runner expects.
-      - name: Install dependencies
-        run: npm ci
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
-      - name: Run the Playwright suite on Chromium
-        run: npm run test:e2e:chromium
+  # Chromium is deliberately NOT run in CI. It is the engine the app already runs on in
+  # development, and the two engines that behave differently from it (Firefox and WebKit) are covered
+  # by cross-browser.yml, where each matrix job installs only its own browser. Add a Chromium job here
+  # only if you decide the extra runner minutes are worth it.

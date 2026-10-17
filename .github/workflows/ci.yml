@@ -34,7 +34,9 @@ jobs:
         run: npm run typecheck
       - name: Check contracts
         run: npm run check:contracts
-      - name: Unit and component tests
+      # Coverage runs the suite and measures it in one go. A separate later build would repeat the
+      # same work, so the build output is produced here instead.
+      - name: Unit and component tests with coverage
         run: npm run test:coverage
       - name: Build the web application
         run: npm run build:web

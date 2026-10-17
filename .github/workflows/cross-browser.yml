@@ -100,8 +100,8 @@ jobs:
       - name: Install the browser
         run: npx playwright install "$PLAYWRIGHT_BROWSER"
 
-      - name: Build the web application once for this browser
-        run: npm run build:web
+      # No explicit build step: the Playwright webServer command below runs `npm run build:web`
+      # before serving dist/, so building here as well would do the same work twice per job.
 
       - name: Record the wall clock start
         run: echo "START_EPOCH=$(date +%s)" >> "$GITHUB_ENV"

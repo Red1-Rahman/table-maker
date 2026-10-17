@@ -17,7 +17,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     permissions:
-      contents: read # read the checked out sources
+      # write implies read, so this is the only entry needed: it both reads the checked out
+      # sources and lets tauri-action create the draft release and upload the installers.
       contents: write # create the draft release and upload the installers
     strategy:
       fail-fast: false
@@ -41,10 +42,12 @@ jobs:
           # not share a package cache with anything else.
           package-manager-cache: false
       - name: Add the Rust targets for the bundle
-        # rustup ships with the hosted runners, so no third party action is needed.
+        # rustup ships with the hosted runners, so no third party action is needed. The Rust version
+        # is whatever the runner image provides, which is the current stable release.
         run: |
-          if [ -n "$RUST_TARGETS" ]; then
-            rustup target add $RUST_TARGETS
+          targets=$(printf '%s' "$RUST_TARGETS" | tr ',' ' ')
+          if [ -n "$targets" ]; then
+            rustup target add $targets
           fi
       - name: Install Linux build dependencies
         if: matrix.os == 'ubuntu-22.04'

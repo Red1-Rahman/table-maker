@@ -24,9 +24,9 @@ Source of truth: `src/types/schema.ts`. `npm run check:contracts` fails CI if a 
 All sizes are CSS px at 96 DPI. A-series pages are `794 × 794·√2` (portrait) so the ratio is exactly `1 : √2`.
 
 ### `LockMode`
-* `growth` – inserting rows/columns or resizing that would exceed the page is rejected (new lines are shrunk to the room left).
-* `autoscale` – the table is scaled down uniformly to fit inside the margins (never enlarged).
-* `free` – page width grows to the table; page height grows in whole pages. PDF paginates; page-break guides are shown.
+* `growth` - inserting rows/columns or resizing that would exceed the page is rejected (new lines are shrunk to the room left).
+* `autoscale` - the table is scaled down uniformly to fit inside the margins (never enlarged).
+* `free` - page width grows to the table; page height grows in whole pages. PDF paginates; page-break guides are shown.
 
 ## Cells
 * `CellData { value, type: CellType, style?: CellStyle, imageConfig?: ImageConfig, comment? }`
@@ -37,14 +37,14 @@ All sizes are CSS px at 96 DPI. A-series pages are `794 × 794·√2` (portrait)
 
 ## Borders (edge model)
 Borders belong to *edges*, not cells, so neighbouring cells never draw double lines.
-* `h:r:c` – horizontal edge above row `r` under column `c` (`r` ranges `0…rows`).
-* `v:r:c` – vertical edge left of column `c` beside row `r` (`c` ranges `0…columns`).
+* `h:r:c` - horizontal edge above row `r` under column `c` (`r` ranges `0…rows`).
+* `v:r:c` - vertical edge left of column `c` beside row `r` (`c` ranges `0…columns`).
 * `BorderSpec { width, style: LineStyle, color }`. `width: 0` hides an edge; no entry means "use the theme grid" (`TableGlobalStyles.gridStyle/gridWidth/gridColor`).
 * Edges strictly inside a merged range are never drawn.
 
 ## Rules
-* `ValidationRule { id, range: CellRange, type: ValidationType, options?, min?, max? }` – `ValidationType`: `text | number | select | date | email | url | checkbox`.
-* `ConditionalRule { id, range, op: CondOp, value?, value2?, style?, scale?, barColor? }` – `CondOp`: `gt | lt | eq | contains | between | dateBetween | colorScale | dataBar`.
+* `ValidationRule { id, range: CellRange, type: ValidationType, options?, min?, max? }` - `ValidationType`: `text | number | select | date | email | url | checkbox`.
+* `ConditionalRule { id, range, op: CondOp, value?, value2?, style?, scale?, barColor? }` - `CondOp`: `gt | lt | eq | contains | between | dateBetween | colorScale | dataBar`.
 * `FilterRule { id, col, op, value?, value2? }`.
 
 ## Formulas

@@ -1,0 +1,45 @@
+name: Workflow security audit (zizmor)
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/**'
+  workflow_dispatch:
+
+# The audit only reads the workflow files, so it needs no permissions at all.
+permissions: {}
+
+concurrency:
+  group: zizmor-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  zizmor:
+    name: zizmor --pedantic
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      # Input names matter: the action only warns about unknown inputs, so a typo here would
+      # silently fall back to the defaults (regular persona) and the job would still pass.
+      - name: Audit the workflows
+        uses: zizmorcore/zizmor-action@85b2b9fb8e3325e7a23d7d0a9d7ba5ae0f999e3e # v0.7.1
+        with:
+          inputs: .github/workflows
+          persona: pedantic
+          min-severity: low
+          # Findings are reported as annotations on the changed workflow files. Uploading SARIF to
+          # the security tab would need security-events: write, and this job runs with no
+          # permissions at all, so annotations are the level-appropriate choice.
+          advanced-security: false
+          annotations: true
+          # Offline audits only: they need no GitHub API token, which keeps the job at
+          # permissions: {} and makes the result independent of API rate limits.
+          online-audits: false

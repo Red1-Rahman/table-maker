@@ -9,3 +9,11 @@ src-tauri/target
 src-tauri/gen
 *.log
 .DS_Store
+
+# Python bytecode from the CI summary script tests
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# TypeScript incremental build info
+*.tsbuildinfo

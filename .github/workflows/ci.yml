@@ -3,18 +3,40 @@ on:
   push:
     branches: [main]
   pull_request:
-permissions:
-  contents: read
+
+# Nothing at workflow level: the job below opts in to read-only repository access.
+permissions: {}
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   test:
+    name: Lint, unit tests and build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Check out the repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with: { node-version: 22, cache: npm }
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run typecheck
-      - run: npm run check:contracts
-      - run: npm run test:coverage
-      - run: npm run build:web
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Check contracts
+        run: npm run check:contracts
+      # Coverage runs the suite and measures it in one go. A separate later build would repeat the
+      # same work, so the build output is produced here instead.
+      - name: Unit and component tests with coverage
+        run: npm run test:coverage
+      - name: Build the web application
+        run: npm run build:web

@@ -1,0 +1,146 @@
+name: Cross-browser (Firefox, WebKit)
+
+# The suite runs the production build in the two engines that behave most unlike Chromium.
+# Triggers are limited to paths that can change the web app or its tests, so documentation-only
+# pushes do not spend runner minutes.
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'public/**'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.ts'
+      - 'playwright.config.ts'
+      - 'tailwind.config.js'
+      - 'postcss.config.js'
+      - 'tsconfig.json'
+      - 'biome.json'
+      - '.github/workflows/cross-browser.yml'
+      - '.github/scripts/summarize_playwright.py'
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'public/**'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.ts'
+      - 'playwright.config.ts'
+      - 'tailwind.config.js'
+      - 'postcss.config.js'
+      - 'tsconfig.json'
+      - 'biome.json'
+      - '.github/workflows/cross-browser.yml'
+      - '.github/scripts/summarize_playwright.py'
+  workflow_dispatch:
+
+# Nothing at workflow level: every job opts in to exactly what it needs.
+permissions: {}
+
+concurrency:
+  group: cross-browser-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  e2e:
+    name: Playwright ${{ matrix.browser }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [firefox, webkit]
+    env:
+      NODE_VERSION: '22'
+      PLAYWRIGHT_BROWSER: ${{ matrix.browser }}
+      # Pinned so the browser cache key and the pydantic install stay reproducible.
+      PYDANTIC_VERSION: '2.12.4'
+      PLAYWRIGHT_JSON_REPORT: playwright-report/results.json
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      # npm ci must come before every `npx playwright` call. Without it, npx cannot see the pinned
+      # @playwright/test and resolves a different version from the registry, so the cache key and the
+      # downloaded browser build would not match the version the test runner expects.
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Read the pinned Playwright version
+        id: playwright-version
+        run: echo "version=$(npx playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+
+      - name: Restore the Playwright browser cache
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}-${{ env.PLAYWRIGHT_BROWSER }}
+
+      - name: Install system dependencies for the browser
+        run: npx playwright install-deps "$PLAYWRIGHT_BROWSER"
+
+      # Always run this step. Playwright checks the install directory first and downloads nothing
+      # when the browser is already present, so it is cheap on a cache hit and it cannot be fooled by
+      # a cache that restored the directory but not the browser inside it.
+      - name: Install the browser
+        run: npx playwright install "$PLAYWRIGHT_BROWSER"
+
+      # No explicit build step: the Playwright webServer command below runs `npm run build:web`
+      # before serving dist/, so building here as well would do the same work twice per job.
+
+      - name: Record the wall clock start
+        run: echo "START_EPOCH=$(date +%s)" >> "$GITHUB_ENV"
+
+      # Runs only the browser this matrix entry installed. `npm run test:e2e:ci` would run both
+      # Firefox and WebKit, so each job would also try to launch the browser it never installed.
+      - name: Run the Playwright suite
+        run: npx playwright test --project="$PLAYWRIGHT_BROWSER"
+
+      - name: Install the summary script dependencies
+        if: always()
+        run: python -m pip install --disable-pip-version-check "pydantic==$PYDANTIC_VERSION" pytest
+
+      - name: Test the summary script models
+        if: always()
+        run: python -m pytest .github/scripts -q
+
+      - name: Write the browser summary
+        if: always()
+        run: python .github/scripts/summarize_playwright.py
+
+      - name: Report the measured wall clock time
+        if: always()
+        run: |
+          now=$(date +%s)
+          elapsed=$(( (now - START_EPOCH) / 60 ))
+          {
+            echo "### Budget"
+            echo ""
+            echo "Wall clock for the $PLAYWRIGHT_BROWSER job: ${elapsed} min (job timeout: 15 min, two matrix jobs per run)."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload the HTML report and traces on failure
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: playwright-${{ env.PLAYWRIGHT_BROWSER }}
+          path: |
+            playwright-report
+            test-results/**/trace.zip
+          retention-days: 7
+          if-no-files-found: ignore

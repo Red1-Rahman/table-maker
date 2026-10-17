@@ -3,31 +3,61 @@ on:
   push:
     tags: ['v*']
   workflow_dispatch:
-permissions:
-  contents: write
+
+# Nothing at workflow level: only the release job needs write access to create a draft release.
+permissions: {}
+
+concurrency:
+  group: desktop-release-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   release:
+    name: Build the desktop app on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    permissions:
+      # write implies read, so this is the only entry needed: it both reads the checked out
+      # sources and lets tauri-action create the draft release and upload the installers.
+      contents: write # create the draft release and upload the installers
     strategy:
       fail-fast: false
       matrix:
         include:
-          - { os: windows-latest, args: '' }
-          - { os: macos-latest, args: '--target universal-apple-darwin' }
-          - { os: ubuntu-22.04, args: '' }
-    runs-on: ${{ matrix.os }}
+          - { os: windows-latest, args: '', rust-targets: '' }
+          - { os: macos-latest, args: '--target universal-apple-darwin', rust-targets: 'aarch64-apple-darwin,x86_64-apple-darwin' }
+          - { os: ubuntu-22.04, args: '', rust-targets: '' }
+    env:
+      RUST_TARGETS: ${{ matrix.rust-targets }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 22, cache: npm }
-      - uses: dtolnay/rust-toolchain@stable
+      - name: Check out the repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          targets: ${{ matrix.os == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
-      - if: matrix.os == 'ubuntu-22.04'
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 22
+          # The release job publishes artifacts built from the dependencies it installs, so it does
+          # not share a package cache with anything else.
+          package-manager-cache: false
+      - name: Add the Rust targets for the bundle
+        # rustup ships with the hosted runners, so no third party action is needed. The Rust version
+        # is whatever the runner image provides, which is the current stable release.
+        run: |
+          targets=$(printf '%s' "$RUST_TARGETS" | tr ',' ' ')
+          if [ -n "$targets" ]; then
+            rustup target add $targets
+          fi
+      - name: Install Linux build dependencies
+        if: matrix.os == 'ubuntu-22.04'
         run: |
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
-      - run: npm ci
-      - uses: tauri-apps/tauri-action@v1
+      - name: Install dependencies
+        run: npm ci
+      - name: Build the Tauri bundle and open a draft release
+        uses: tauri-apps/tauri-action@1deb371b0cd8bd54025b384f1cd735e725c4060f # v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
